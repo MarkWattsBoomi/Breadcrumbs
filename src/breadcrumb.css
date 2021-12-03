@@ -1,0 +1,29 @@
+.bread {
+    padding-left: 2rem;
+    display: flex !important;
+    flex-direction: row;
+    font-weight: 500;
+}
+
+.bread-crumb {
+    font-size: 1rem;
+    color: rgb(106, 141, 218);
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    cursor: pointer;
+}
+
+.bread-crumb:hover {
+    color: orange;
+}
+
+.bread-nocrumb {
+    font-size: 1rem;
+    cursor: default;
+}
+
+.bread-crumb-spacer {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
