@@ -63,6 +63,8 @@ It should be given a JSON structure as its value in this format: -
 }
 ```
 
+value can contain a field name in double curly braces e.g. {{fieldname}}.  This will be substituted
+
 The structure can be nested as far as required.
 
 If an element has no value then it is not clickable.
