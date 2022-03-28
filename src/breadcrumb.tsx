@@ -7,7 +7,7 @@ declare var manywho: any;
 export default class Breadcrumb extends FlowComponent {
 
     element: HTMLDivElement;
-    lastContent = (<div className="breadcrumb"/>);
+    lastContent = (<div className="bread"/>);
     paths: any[] = [];
     trail: any[] = [];
 
