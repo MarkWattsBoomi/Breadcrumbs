@@ -1,4 +1,4 @@
-import { eLoadingState, FlowComponent, FlowField } from 'flow-component-model';
+import { eContentType, eLoadingState, FlowComponent, FlowField, FlowObjectData } from 'flow-component-model';
 import * as React from 'react';
 import "./breadcrumb.css";
 
@@ -32,12 +32,37 @@ export default class Breadcrumb extends FlowComponent {
 
     async getLabel(label: string) : Promise<string> {
         // use regex to find any {{}} tags in content and save them in matches
+        let contentType: eContentType;
+        let value: any;
         let match: any;
         const matches: any[] = [];
         while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
-            let fld: FlowField = await this.loadValue(match[1]);
+            const fldElements: string[] = match[1].split('->');
+            let fld: FlowField;
+            if (this.fields[fldElements[0]]) {
+                fld = this.fields[fldElements[0]];
+            } else {
+                fld = await this.loadValue(fldElements[0]);
+            }
+
             if (fld) {
-                label = label.replace(match[0], fld.value as string);
+                let od: FlowObjectData = fld.value as FlowObjectData;
+                if (od) {
+                    if (fldElements.length > 1) {
+                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                            contentType = (od as FlowObjectData).properties[fldElements[epos]]?.contentType;
+                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                        }
+                        value = od;
+                    } else {
+                        value = fld.value;
+                        contentType = fld.contentType;
+                    }
+                } else {
+                    value = fld.value;
+                    contentType = fld.contentType;
+                }
+                label = label.replace(match[0], value);
             }
         }
         return label;
@@ -47,6 +72,9 @@ export default class Breadcrumb extends FlowComponent {
         this.trail = [];
         this.paths=[];
         let pathStr = this.attributes.path?.value;
+        if(pathStr.startsWith("{{")) {
+            pathStr = await this.getLabel(pathStr);
+        }
         let path: any;
         if(pathStr) {
             try {
