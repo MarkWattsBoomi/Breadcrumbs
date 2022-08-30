@@ -72,16 +72,21 @@ export default class Breadcrumb extends FlowComponent {
         this.trail = [];
         this.paths=[];
         let pathStr = this.attributes.path?.value;
+        let moduleStr = this.attributes.module?.value;
+        let modeStr = this.attributes.mode?.value;
+        let opStr: string;
+
         if(pathStr.startsWith("{{")) {
             pathStr = await this.getLabel(pathStr);
         }
+        
         let path: any;
         if(pathStr) {
             try {
                 path = JSON.parse(pathStr);
                 while(path){
                     let label: string = await this.getLabel(path.label);
-                    this.paths.push({label: label, value: path.value})
+                    this.paths.push({label: label, value: path.value, flowid: path.flowid})
                     path=path.child;
                 }
                 this.paths.forEach((path: any) => {
@@ -94,7 +99,7 @@ export default class Breadcrumb extends FlowComponent {
                                 className="bread-crumb"
                                 onClick={
                                     (event: any) => {
-                                        this.crumbClicked(event, path.value);
+                                        this.crumbClicked(event, path.flowid?path.flowid:path.value);
                                     }
                                 }
                             >
