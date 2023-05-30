@@ -25,8 +25,8 @@ export default class Breadcrumb extends FlowComponent {
 
     async crumbClicked(e: any, name: string) {
         this.setStateValue(name);
-        if(this.outcomes.OnClick && name){
-            await this.triggerOutcome("OnClick");
+        if(Object.keys(this.outcomes)[0] && name){
+            await this.triggerOutcome(Object.keys(this.outcomes)[0]);
         }
     }
 
@@ -75,6 +75,7 @@ export default class Breadcrumb extends FlowComponent {
         let moduleStr = this.attributes.module?.value;
         let modeStr = this.attributes.mode?.value;
         let opStr: string;
+        let sepChar: string = this.attributes.separatorString?.value || " / ";
 
         if(pathStr.startsWith("{{")) {
             pathStr = await this.getLabel(pathStr);
@@ -91,7 +92,7 @@ export default class Breadcrumb extends FlowComponent {
                 }
                 this.paths.forEach((path: any) => {
                     if(this.trail.length>0){
-                        this.trail.push(<div className="bread-crumb-spacer">{" / "}</div>);
+                        this.trail.push(<div className="bread-crumb-spacer">{sepChar}</div>);
                     }
                     if(path.value){
                         this.trail.push(
