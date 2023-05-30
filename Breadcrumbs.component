@@ -1,0 +1,41 @@
+{
+  "attributes": {
+    "path": "A JSON string containing the pathh",
+    "separatorString": "The string to show between breadcrumbs.  Defaults to \" / \"."
+  },
+  "configurationEditors": [
+    "STATE_VALUE"
+  ],
+  "dateCreated": "2023-05-30T12:02:46.9703+00:00",
+  "dateModified": "2023-05-30T13:03:31.410431+00:00",
+  "designTimeImageURL": null,
+  "designTimeRenderType": "IMAGE",
+  "developerName": "Breadcrumbs",
+  "developerSummary": "A breadcrumb navigation component",
+  "elementType": "CUSTOM_PAGE_COMPONENT",
+  "icon": "Signpost",
+  "id": "97b3c417-5971-4535-880e-da4e011ec4e5",
+  "key": "breadcrumb",
+  "legacyScriptURL": "https://master-boomi-flow-assets-prod-us-east-1.s3.amazonaws.com/eee4d731-98d9-400f-a0f8-1a0e71ba5fbc/breadcrumb.js",
+  "legacyStyleSheetURL": "https://master-boomi-flow-assets-prod-us-east-1.s3.amazonaws.com/eee4d731-98d9-400f-a0f8-1a0e71ba5fbc/breadcrumb.css",
+  "scriptURL": null,
+  "styleSheetURL": null,
+  "whoCreated": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "22dcefc8-b407-4974-8044-327cb44b134e",
+    "lastName": "Watts"
+  },
+  "whoModified": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "22dcefc8-b407-4974-8044-327cb44b134e",
+    "lastName": "Watts"
+  },
+  "whoOwner": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "22dcefc8-b407-4974-8044-327cb44b134e",
+    "lastName": "Watts"
+  }
+}
