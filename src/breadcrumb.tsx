@@ -76,6 +76,8 @@ export default class Breadcrumb extends FlowComponent {
         let modeStr = this.attributes.mode?.value;
         let opStr: string;
         let sepChar: string = this.attributes.separatorString?.value || " / ";
+        let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid"); 
+       
 
         if(pathStr.startsWith("{{")) {
             pathStr = await this.getLabel(pathStr);
@@ -95,12 +97,13 @@ export default class Breadcrumb extends FlowComponent {
                         this.trail.push(<div className="bread-crumb-spacer">{sepChar}</div>);
                     }
                     if(path.value){
+                        let crumbId: string = path[crumbAttributeName]?path[crumbAttributeName]:path.value;
                         this.trail.push(
                             <div
                                 className="bread-crumb"
                                 onClick={
                                     (event: any) => {
-                                        this.crumbClicked(event, path.flowid?path.flowid:path.value);
+                                        this.crumbClicked(event, crumbId);
                                     }
                                 }
                             >

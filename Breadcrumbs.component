@@ -1,7 +1,8 @@
 {
   "attributes": {
     "path": "A JSON string containing the pathh",
-    "separatorString": "The string to show between breadcrumbs.  Defaults to \" / \"."
+    "separatorString": "The string to show between breadcrumbs.  Defaults to \" / \".",
+    "selectedCrumbAttribute":"Path Attribute.  The attribute if the selected path to return into the state.  Defaults to flow_id then value"
   },
   "configurationEditors": [
     "STATE_VALUE"
