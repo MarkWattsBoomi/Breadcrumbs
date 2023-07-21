@@ -15,12 +15,23 @@ export default class Breadcrumb extends FlowComponent {
         super(props);
         this.crumbClicked = this.crumbClicked.bind(this);
         this.buildPaths = this.buildPaths.bind(this);
+        this.moveHappened = this.moveHappened.bind(this);
     }
 
     async componentDidMount() {
         await super.componentDidMount();
-        await this.buildPaths();
-        this.forceUpdate();
+        (manywho as any).eventManager.addDoneListener(this.moveHappened, this.componentId);
+        this.buildPaths();
+    }
+
+    async componentWillUnmount(): Promise<void> {
+        (manywho as any).eventManager.removeDoneListener(this.componentId);
+    }
+
+    moveHappened(xhr: XMLHttpRequest, request: any) {
+        if ((xhr as any).invokeType === 'FORWARD') {
+            this.buildPaths();
+        }
     }
 
     async crumbClicked(e: any, name: string) {
@@ -39,11 +50,11 @@ export default class Breadcrumb extends FlowComponent {
         while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
             const fldElements: string[] = match[1].split('->');
             let fld: FlowField;
-            if (this.fields[fldElements[0]]) {
-                fld = this.fields[fldElements[0]];
-            } else {
+            //if (this.fields[fldElements[0]]) {
+            //    fld = this.fields[fldElements[0]];
+            //} else {
                 fld = await this.loadValue(fldElements[0]);
-            }
+            //}
 
             if (fld) {
                 let od: FlowObjectData = fld.value as FlowObjectData;
@@ -126,6 +137,7 @@ export default class Breadcrumb extends FlowComponent {
                 console.log(e);
             }
         }
+        this.forceUpdate();
     }
 
     render() {
