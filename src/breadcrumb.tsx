@@ -10,12 +10,20 @@ export default class Breadcrumb extends FlowComponent {
     lastContent = (<div className="bread"/>);
     paths: any[] = [];
     trail: any[] = [];
+    home: any;
+    favorite: any;
+    flds: Map<string,FlowField>;
+    homeFlow: string;
+    setHomeOutcome: string;
+    flowId: string;
 
     constructor(props: any) {
         super(props);
         this.crumbClicked = this.crumbClicked.bind(this);
         this.buildPaths = this.buildPaths.bind(this);
         this.moveHappened = this.moveHappened.bind(this);
+        this.goHome = this.goHome.bind(this);
+        this.setHome = this.setHome.bind(this);
     }
 
     async componentDidMount() {
@@ -41,20 +49,37 @@ export default class Breadcrumb extends FlowComponent {
         }
     }
 
+    async goHome(e: any) {
+        e.stopPropagation();
+        this.setStateValue(this.homeFlow);
+        if(Object.keys(this.outcomes)[0] && this.homeFlow){
+            await this.triggerOutcome(Object.keys(this.outcomes)[0]);
+        }
+    }
+
+    async setHome() {
+        if(this.setHomeOutcome && this.outcomes[this.setHomeOutcome]){
+            await this.triggerOutcome(this.outcomes[this.setHomeOutcome].developerName);
+        }
+    }
+
     async getLabel(label: string) : Promise<string> {
         // use regex to find any {{}} tags in content and save them in matches
         let contentType: eContentType;
         let value: any;
         let match: any;
+        
         const matches: any[] = [];
         while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
             const fldElements: string[] = match[1].split('->');
             let fld: FlowField;
-            //if (this.fields[fldElements[0]]) {
-            //    fld = this.fields[fldElements[0]];
-            //} else {
+            if(!this.flds.has(fldElements[0])){
                 fld = await this.loadValue(fldElements[0]);
-            //}
+                this.flds.set(fldElements[0], fld);
+            }
+            else {
+                fld = this.flds.get(fldElements[0]);
+            }
 
             if (fld) {
                 let od: FlowObjectData = fld.value as FlowObjectData;
@@ -82,16 +107,30 @@ export default class Breadcrumb extends FlowComponent {
     async buildPaths() {
         this.trail = [];
         this.paths=[];
+        this.flds=new Map();
         let pathStr = this.attributes.path?.value;
-        let moduleStr = this.attributes.module?.value;
-        let modeStr = this.attributes.mode?.value;
-        let opStr: string;
+        let flowIdStr: string = this.attributes.flowId?.value;
+        let userId = this.attributes.userId?.value;
+        this.homeFlow = this.attributes.homeFlow?.value;
+        this.setHomeOutcome = this.attributes.setHomeOutcome?.value;
+ 
         let sepChar: string = this.attributes.separatorString?.value || " / ";
-        let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid"); 
-       
+        let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid");         
+
+        if(flowIdStr.startsWith("{{")) {
+            this.flowId = await this.getLabel(flowIdStr);
+        }
 
         if(pathStr.startsWith("{{")) {
             pathStr = await this.getLabel(pathStr);
+        }
+
+        if(userId?.startsWith("{{")) {
+            userId = await this.getLabel(userId);
+        }
+
+        if(this.homeFlow?.startsWith("{{")) {
+            this.homeFlow = await this.getLabel(this.homeFlow);
         }
         
         let path: any;
@@ -141,13 +180,42 @@ export default class Breadcrumb extends FlowComponent {
     }
 
     render() {
-
+        let home: any;
+        let fav: any;
+        if(this.homeFlow){
+            if(this.homeFlow===this.flowId){
+                home=(
+                    <span 
+                        className='bread-home glyphicon glyphicon-home'
+                        title="You are already in your home module"
+                    />
+                );
+            }
+            else {
+                home=(
+                    <span 
+                        className='bread-home bread-home-hot glyphicon glyphicon-home'
+                        title="Go to home flow"
+                        onClick={this.goHome}
+                    />
+                );
+                fav=(
+                    <span 
+                        className='bread-fav bread-fav-hot glyphicon glyphicon-star-empty'
+                        title="Make this your home module"
+                        onClick={this.setHome}
+                    />
+                );
+            }
+        }
         if(this.loadingState === eLoadingState.ready){           
             this.lastContent = (
                 <div
                     className="bread"
                 >
+                    {home}
                     {this.trail}
+                    {fav}
                 </div>
             );
         }

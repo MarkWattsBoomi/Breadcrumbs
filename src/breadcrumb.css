@@ -27,3 +27,35 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
+
+.bread-home {
+    font-size: 1.1rem;
+    margin: auto 0.5rem auto 0;
+    color: #ccc;
+    top: 0 !important;
+}
+
+.bread-home-hot {
+    color: rgb(106, 141, 218);
+    cursor: pointer;
+}
+
+.bread-home-hot:hover {
+    color: orange;
+}
+
+.bread-fav {
+    font-size: 1.1rem;
+    margin: auto 0 auto 2rem;
+    color: #000;
+    top: 0 !important;
+}
+
+.bread-fav-hot {
+    color: rgb(106, 141, 218);
+    cursor: pointer;
+}
+
+.bread-fav-hot:hover {
+    color: orange;
+}
