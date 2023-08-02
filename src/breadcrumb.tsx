@@ -7,9 +7,7 @@ declare var manywho: any;
 export default class Breadcrumb extends FlowComponent {
 
     element: HTMLDivElement;
-    lastContent = (<div className="bread"/>);
     paths: any[] = [];
-    trail: any[] = [];
     home: any;
     favorite: any;
     flds: Map<string,FlowField>;
@@ -29,16 +27,18 @@ export default class Breadcrumb extends FlowComponent {
     async componentDidMount() {
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.moveHappened, this.componentId);
-        this.buildPaths();
+        await this.buildPaths();
+        this.forceUpdate();
     }
 
     async componentWillUnmount(): Promise<void> {
         (manywho as any).eventManager.removeDoneListener(this.componentId);
     }
 
-    moveHappened(xhr: XMLHttpRequest, request: any) {
+    async moveHappened(xhr: XMLHttpRequest, request: any) {
         if ((xhr as any).invokeType === 'FORWARD') {
-            this.buildPaths();
+            await this.buildPaths();
+            this.forceUpdate();
         }
     }
 
@@ -104,8 +104,8 @@ export default class Breadcrumb extends FlowComponent {
         return label;
     }
 
-    async buildPaths() {
-        this.trail = [];
+    async buildPaths() : Promise<any> {
+        
         this.paths=[];
         this.flds=new Map();
         let pathStr = this.attributes.path?.value;
@@ -114,8 +114,7 @@ export default class Breadcrumb extends FlowComponent {
         this.homeFlow = this.attributes.homeFlow?.value;
         this.setHomeOutcome = this.attributes.setHomeOutcome?.value;
  
-        let sepChar: string = this.attributes.separatorString?.value || " / ";
-        let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid");         
+                
 
         if(flowIdStr.startsWith("{{")) {
             this.flowId = await this.getLabel(flowIdStr);
@@ -142,46 +141,18 @@ export default class Breadcrumb extends FlowComponent {
                     this.paths.push({label: label, value: path.value, flowid: path.flowid})
                     path=path.child;
                 }
-                this.paths.forEach((path: any) => {
-                    if(this.trail.length>0){
-                        this.trail.push(<div className="bread-crumb-spacer">{sepChar}</div>);
-                    }
-                    if(path.value){
-                        let crumbId: string = path[crumbAttributeName]?path[crumbAttributeName]:path.value;
-                        this.trail.push(
-                            <div
-                                className="bread-crumb"
-                                onClick={
-                                    (event: any) => {
-                                        this.crumbClicked(event, crumbId);
-                                    }
-                                }
-                            >
-                                {path.label}
-                            </div>
-                        );
-                    }
-                    else {
-                        this.trail.push(
-                            <div
-                                className="bread-nocrumb"
-                            >
-                                {path.label}
-                            </div>
-                        );
-                    }
-                })
             }
             catch(e){
                 console.log(e);
             }
         }
-        this.forceUpdate();
+        return 1;
     }
 
     render() {
         let home: any;
         let fav: any;
+        let trail: any[] = [];
         if(this.homeFlow){
             if(this.homeFlow===this.flowId){
                 home=(
@@ -199,27 +170,59 @@ export default class Breadcrumb extends FlowComponent {
                         onClick={this.goHome}
                     />
                 );
-                fav=(
-                    <span 
-                        className='bread-fav bread-fav-hot glyphicon glyphicon-star-empty'
-                        title="Make this your home module"
-                        onClick={this.setHome}
-                    />
-                );
+                if(this.outcomes[this.setHomeOutcome]){
+                    fav=(
+                        <span 
+                            className='bread-fav bread-fav-hot glyphicon glyphicon-star-empty'
+                            title="Make this your home module"
+                            onClick={this.setHome}
+                        />
+                    );
+                }
             }
         }
-        if(this.loadingState === eLoadingState.ready){           
-            this.lastContent = (
-                <div
-                    className="bread"
-                >
-                    {home}
-                    {this.trail}
-                    {fav}
-                </div>
-            );
-        }
-        return this.lastContent;
+
+        let sepChar: string = this.attributes.separatorString?.value || " / ";
+        let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid"); 
+        this.paths.forEach((path: any) => {
+            if(trail.length>0){
+                trail.push(<div className="bread-crumb-spacer">{sepChar}</div>);
+            }
+            if(path.value){
+                let crumbId: string = path[crumbAttributeName]?path[crumbAttributeName]:path.value;
+                trail.push(
+                    <div
+                        className="bread-crumb"
+                        onClick={
+                            (event: any) => {
+                                this.crumbClicked(event, crumbId);
+                            }
+                        }
+                    >
+                        {path.label}
+                    </div>
+                );
+            }
+            else {
+                trail.push(
+                    <div
+                        className="bread-nocrumb"
+                    >
+                        {path.label}
+                    </div>
+                );
+            }
+        })
+        
+        return (
+            <div
+                className="bread"
+            >
+                {home}
+                {trail}
+                {fav}
+            </div>
+        );
     }
 }
 
