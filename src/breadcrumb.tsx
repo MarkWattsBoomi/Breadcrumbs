@@ -1,6 +1,8 @@
 import { eContentType, eLoadingState, FlowComponent, FlowField, FlowObjectData } from 'flow-component-model';
 import * as React from 'react';
 import "./breadcrumb.css";
+import { FCMModal } from 'fcmkit';
+import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 
 declare var manywho: any;
 
@@ -14,6 +16,9 @@ export default class Breadcrumb extends FlowComponent {
     homeFlow: string;
     setHomeOutcome: string;
     flowId: string;
+    help: string;
+    modal: FCMModal;
+    login: string;
 
     constructor(props: any) {
         super(props);
@@ -22,6 +27,7 @@ export default class Breadcrumb extends FlowComponent {
         this.moveHappened = this.moveHappened.bind(this);
         this.goHome = this.goHome.bind(this);
         this.setHome = this.setHome.bind(this);
+        this.showHelp = this.showHelp.bind(this);
     }
 
     async componentDidMount() {
@@ -57,10 +63,26 @@ export default class Breadcrumb extends FlowComponent {
         }
     }
 
-    async setHome() {
+    async setHome(e: any) {
+        e.stopPropagation();
         if(this.setHomeOutcome && this.outcomes[this.setHomeOutcome]){
             await this.triggerOutcome(this.outcomes[this.setHomeOutcome].developerName);
         }
+    }
+
+    async showHelp(e: any) {
+        e.stopPropagation();
+        let cnt: any = (
+            <div 
+                dangerouslySetInnerHTML={{__html:this.help}}
+            />
+        );
+        this.modal?.showDialog(
+            null,
+            "Module Help",
+            cnt,
+            [new FCMModalButton("Close",this.modal.hideDialog)]
+        );
     }
 
     async getLabel(label: string) : Promise<string> {
@@ -113,6 +135,8 @@ export default class Breadcrumb extends FlowComponent {
         let userId = this.attributes.userId?.value;
         this.homeFlow = this.attributes.homeFlow?.value;
         this.setHomeOutcome = this.attributes.setHomeOutcome?.value;
+        this.help = this.attributes.help?.value;
+        this.login = this.attributes.login?.value;
  
                 
 
@@ -130,6 +154,14 @@ export default class Breadcrumb extends FlowComponent {
 
         if(this.homeFlow?.startsWith("{{")) {
             this.homeFlow = await this.getLabel(this.homeFlow);
+        }
+
+        if(this.help?.startsWith("{{")) {
+            this.help = await this.getLabel(this.help);
+        }
+
+        if(this.login?.startsWith("{{")) {
+            this.login = await this.getLabel(this.login);
         }
         
         let path: any;
@@ -182,6 +214,42 @@ export default class Breadcrumb extends FlowComponent {
             }
         }
 
+        let help: any;
+        if(this.help) {
+            if(this.help.length > 0) {
+                help=(
+                    <span 
+                        className='bread-hlp bread-hlp-hot glyphicon glyphicon-question-sign'
+                        title="Show help"
+                        onClick={this.showHelp}
+                    />
+                );
+            }
+            else {
+                help=(
+                    <span 
+                        className='bread-hlp glyphicon glyphicon-question-sign'
+                        title="No help available"
+                    />
+                );
+            }
+        }
+        else {
+            help=(
+                <span 
+                    className='bread-hlp'
+                />
+            );
+        }
+
+        let login: any = (
+            <span 
+                className='bread-login'
+            >
+                {this.login}
+            </span>
+        );
+
         let sepChar: string = this.attributes.separatorString?.value || " / ";
         let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid"); 
         this.paths.forEach((path: any) => {
@@ -218,9 +286,14 @@ export default class Breadcrumb extends FlowComponent {
             <div
                 className="bread"
             >
+                <FCMModal 
+                    ref={(element: FCMModal)=>{this.modal=element}}
+                />
                 {home}
                 {trail}
                 {fav}
+                {login}
+                {help}
             </div>
         );
     }
