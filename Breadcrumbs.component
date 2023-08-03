@@ -1,6 +1,8 @@
 {
   "attributes": {
+    "help": "Help. The value or the name of a flow field containing the current page's help value.",
     "path": "A JSON string containing the pathh",
+    "login": "Login. The value or a flow value name containing the current user's display name",
     "flowId": "Flow Id. The value or name of a flow id containg the current flow's Id",
     "userId": "User Id.  The value or name of a flow field containing the current user's Id.",
     "homeFlow": "Home Flow. The value or name of a flow field containing the current user's home flow Id.",
@@ -12,7 +14,7 @@
     "STATE_VALUE"
   ],
   "dateCreated": "2023-08-02T11:09:36.611437+00:00",
-  "dateModified": "2023-08-02T12:14:49.3091293+00:00",
+  "dateModified": "2023-08-03T08:30:18.5978219+00:00",
   "designTimeImageURL": null,
   "designTimeRenderType": "IMAGE",
   "developerName": "Breadcrumbs",
