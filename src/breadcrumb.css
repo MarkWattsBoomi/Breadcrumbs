@@ -1,13 +1,14 @@
 .bread {
-    padding-left: 2rem;
+    padding: 0 4rem;
     display: flex !important;
     flex-direction: row;
     font-weight: 500;
+    min-height: 30px;
 }
 
 .bread-crumb {
     font-size: 1rem;
-    color: rgb(106, 141, 218);
+    color: #6a8dda;
     text-decoration: underline;
     text-underline-offset: 0.2rem;
     cursor: pointer;
@@ -20,12 +21,14 @@
 .bread-nocrumb {
     font-size: 1rem;
     cursor: default;
+    color: #111;
 }
 
 .bread-crumb-spacer {
     font-size: 1rem;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+    color: #111;
 }
 
 .bread-home {
@@ -68,7 +71,7 @@
 
 .bread-hlp {
     font-size: 1.5rem;
-    margin: auto 3rem auto 0;
+    margin: auto 0;
     color: #ccc;
     top: 0 !important;
 }
