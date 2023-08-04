@@ -19,6 +19,7 @@ export default class Breadcrumb extends FlowComponent {
     help: string;
     modal: FCMModal;
     login: string;
+    org: string;
 
     constructor(props: any) {
         super(props);
@@ -137,8 +138,7 @@ export default class Breadcrumb extends FlowComponent {
         this.setHomeOutcome = this.attributes.setHomeOutcome?.value;
         this.help = this.attributes.help?.value;
         this.login = this.attributes.login?.value;
- 
-                
+        this.org = this.attributes.org?.value;      
 
         if(flowIdStr.startsWith("{{")) {
             this.flowId = await this.getLabel(flowIdStr);
@@ -162,6 +162,10 @@ export default class Breadcrumb extends FlowComponent {
 
         if(this.login?.startsWith("{{")) {
             this.login = await this.getLabel(this.login);
+        }
+
+        if(this.org?.startsWith("{{")) {
+            this.org = await this.getLabel(this.org);
         }
         
         let path: any;
@@ -190,7 +194,7 @@ export default class Breadcrumb extends FlowComponent {
                 home=(
                     <span 
                         className='bread-home glyphicon glyphicon-home'
-                        title="You are already in your home module"
+                        title="This is your home page"
                     />
                 );
             }
@@ -198,7 +202,7 @@ export default class Breadcrumb extends FlowComponent {
                 home=(
                     <span 
                         className='bread-home bread-home-hot glyphicon glyphicon-home'
-                        title="Go to home flow"
+                        title="Go to home page"
                         onClick={this.goHome}
                     />
                 );
@@ -206,7 +210,7 @@ export default class Breadcrumb extends FlowComponent {
                     fav=(
                         <span 
                             className='bread-fav bread-fav-hot glyphicon glyphicon-star-empty'
-                            title="Make this your home module"
+                            title="Make this your home page"
                             onClick={this.setHome}
                         />
                     );
@@ -249,6 +253,17 @@ export default class Breadcrumb extends FlowComponent {
                 {this.login}
             </span>
         );
+
+        let org: any;
+        if(this.org){
+            org = (
+                <span 
+                    className='bread-org'
+                >
+                    {"(" + this.org + ")"}
+                </span>
+            );
+        }
 
         let sepChar: string = this.attributes.separatorString?.value || " / ";
         let crumbAttributeName: string = this.getAttribute("selectedCrumbAttribute","flowid"); 
@@ -293,6 +308,7 @@ export default class Breadcrumb extends FlowComponent {
                 {trail}
                 {fav}
                 {login}
+                {org}
                 {help}
             </div>
         );

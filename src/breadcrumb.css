@@ -69,6 +69,12 @@
     color: #111;
 }
 
+.bread-org {
+    font-size: 0.9rem;
+    margin: auto 1rem auto -0.7rem;
+    color: #111;
+}
+
 .bread-hlp {
     font-size: 1.5rem;
     margin: auto 0;

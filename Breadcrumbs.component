@@ -3,6 +3,7 @@
     "help": "Help. The value or the name of a flow field containing the current page's help value.",
     "path": "A JSON string containing the pathh",
     "login": "Login. The value or a flow value name containing the current user's display name",
+    "org": "Organisation. The value or a flow value name containing the current user's organisation name",
     "flowId": "Flow Id. The value or name of a flow id containg the current flow's Id",
     "userId": "User Id.  The value or name of a flow field containing the current user's Id.",
     "homeFlow": "Home Flow. The value or name of a flow field containing the current user's home flow Id.",
