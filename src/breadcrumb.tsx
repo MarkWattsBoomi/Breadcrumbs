@@ -140,7 +140,7 @@ export default class Breadcrumb extends FlowComponent {
         this.login = this.attributes.login?.value;
         this.org = this.attributes.org?.value;      
 
-        if(flowIdStr.startsWith("{{")) {
+        if(flowIdStr?.startsWith("{{")) {
             this.flowId = await this.getLabel(flowIdStr);
         }
 
